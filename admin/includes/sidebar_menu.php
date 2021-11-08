@@ -18,20 +18,23 @@
     <div class="sidebar-content main-menu-content">
         <div class="nav-container">
             <ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-                <li class="nav-item active">
-                    <a href="<?= SITE_ADMIN_URL?>/dashboard.php"><i class="ft-home"></i><span class="menu-title" data-i18n="Dashboard">Dashboard</span></a>
+                <li class="nav-item <?php if($page == 'dashboard') echo 'active'; ?>">
+                    <a href="<?= SITE_ADMIN_URL?>dashboard.php"><i class="ft-home"></i><span class="menu-title" data-i18n="Dashboard">Dashboard</span></a>
                 </li>
-                <li class="nav-item">
-                    <a href="<?= SITE_ADMIN_URL?>/userlist.php"><i class="ft-user"></i><span class="menu-title" data-i18n="User List">User List</span></a>
+                <li class="nav-item <?php if($page == 'userlist') echo 'active'; ?>">
+                    <a href="<?= SITE_ADMIN_URL?>userlist.php"><i class="ft-user"></i><span class="menu-title" data-i18n="User List">User List</span></a>
                 </li>
-                <li class="nav-item">
-                    <a href="app-email.html"><i class="ft-user"></i><span class="menu-title" data-i18n="Profile">Profile</span></a>
+                <li class="nav-item <?php if($page == 'profile') echo 'active'; ?>">
+                    <a href="<?= SITE_ADMIN_URL?>profile.php"><i class="ft-user"></i><span class="menu-title" data-i18n="Profile">Profile</span></a>
                 </li>
-                <li class="nav-item">
-                    <a href="app-email.html"><i class="ft-user"></i><span class="menu-title" data-i18n="Database">Database</span></a>
+                <li class="nav-item <?php if($page == 'database') echo 'active'; ?>">
+                    <a href="<?= SITE_ADMIN_URL?>database.php"><i class="ft-user"></i><span class="menu-title" data-i18n="Database">Database</span></a>
                 </li>
                 <li class="nav-item">
                     <a href="app-email.html"><i class="ft-user"></i><span class="menu-title" data-i18n="Database">Reports</span></a>
+                </li>
+                <li class="nav-item <?php if($page == 'header_logo') echo 'active'; ?>">
+                    <a href="<?= SITE_ADMIN_URL?>header_logo.php"><i class="ft-user"></i><span class="menu-title" data-i18n="Database">Header & Logo</span></a>
                 </li>
             </ul>
         </div>

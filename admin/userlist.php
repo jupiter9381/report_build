@@ -2,6 +2,7 @@
 	include("config/base.php");
 	include("functions/fn_userlist.php");
 	$title = "Manage Users";
+	$page = "userlist";
 ?>
 <!doctype html>
 <html lang="en" class="no-js">
@@ -56,7 +57,29 @@
 	                                    					</tr>
 	                                    				</thead>
 	                                    				<tbody>
-	                                    					
+	                                    					<?php 
+	                                    						if($query->rowCount() > 0) { 
+	                                    							foreach($results as $result) {
+	                                    								?>
+	                                    								<tr>
+	                                    									<td><?php echo htmlentities($cnt);?></td>
+								                                            <td><?php echo htmlentities($result->email);?></td>
+								                                            <td><?php echo htmlentities($result->name);?></td>
+								                                            <td><?php echo htmlentities($result->level);?></td>
+								                                              <td><?php echo htmlentities($result->department);?></td>
+								                                            <td><?php echo htmlentities($result->role);?></td>
+								                                            <td>
+								                                            	<a href="edit-user.php?edit=<?php echo $result->id;?>" onclick="return confirm('Do you want to Edit');"><i class="ft-edit"></i>
+								                                            	</a>&nbsp;&nbsp;
+																				<a href="userlist.php?del=<?php echo $result->id;?>&name=<?php echo htmlentities($result->email);?>" onclick="return confirm('Do you want to Delete');"><i class="ft-delete" style="color:red"></i>
+																				</a>&nbsp;&nbsp;
+								                                            </td>
+	                                    								</tr>
+	                                    								<?php 
+	                                    								$cnt=$cnt+1;
+	                                    							}
+	                                    						}
+	                                    					?>
 	                                    				</tbody>
 	                                    			</table>
 	                                    		</div>

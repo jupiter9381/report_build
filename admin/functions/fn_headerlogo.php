@@ -4,6 +4,10 @@
 
 	include("config/dbconnect.php");
 
+	if(strlen($_SESSION['alogin'])==0){
+		header('location:index.php');
+	}
+	
 	$msg = null;
 	$sql = "SELECT * from config LIMIT 1;";
 	$query = $dbh -> prepare($sql);

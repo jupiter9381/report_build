@@ -3,6 +3,8 @@
 	include("functions/fn_dashboard.php");
 	$title = "Dashboard";
 	$page = "dashboard";
+
+
 ?>
 <!doctype html>
 <html lang="en" class="no-js">
@@ -72,6 +74,7 @@
 	                        </div>
 	                	</div>
 	                	<div class="row">
+	                		<img id="headerImg" src="<?= SITE_ADMIN_URL?>uploads/1594843584.png" class="d-none">
 	                		<?php foreach($results as $result) { ?>
 	                			<?php if($result->live == "1") {?>
 			                		<div class="col-md-4 report_section" data-report="<?= $result->id?>">
@@ -85,7 +88,7 @@
 		                                    	</div>
 		                                    	<div class="card-footer mr-2 ml-2">
 		                                    		<div class="float-left">
-		                                    			<a href="javascript:void(0);"><img src="<?= SITE_ADMIN_ASSET_IMG?>/chart/pdf.jpg" width="30" class="mr-2"></a>
+		                                    			<a href="<?= SITE_ADMIN_URL?>dashboard.php?id=<?= $result->id?>&type=pdf"><img src="<?= SITE_ADMIN_ASSET_IMG?>/chart/pdf.jpg" width="30" class="mr-2"></a>
 		                                    			<a href="javascript:void(0);"><img src="<?= SITE_ADMIN_ASSET_IMG?>/chart/csv.png" width="35"></a>
 		                                    		</div>
 		                                    		<div class="float-right"> 
@@ -128,10 +131,78 @@
 	    <?php include('includes/basic_js.php');?>
 
 	    <script src="<?= SITE_ADMIN_ASSET_VENDOR?>/js/apexcharts.min.js"></script>
+	    <script src="<?= SITE_ADMIN_ASSET_JS?>/jspdf.min.js"></script>
+	    <script>
+	    	function getBase64Image(img) {
+			  var canvas = document.createElement("canvas");
+			  canvas.width = img.width;
+			  canvas.height = img.height;
+			  var ctx = canvas.getContext("2d");
+			  ctx.drawImage(img, 0, 0);
+			  var dataURL = canvas.toDataURL("image/png");
+			  return dataURL;
+			}
+			var base64 = getBase64Image(document.getElementById("headerImg"));
+	    </script>
+	    <?php 
+	    	if(isset($_GET['id']) && isset($_GET['type']) && $_GET['type']=='pdf'){
+				echo '<div id="jstbl" class="col-md-12 table-responsive">';
+				echo '<h3>Header</h3>';
+				$sql = "SELECT * from reports where id = (:id);";
+				$query = $dbh->prepare($sql);
+				$query-> bindParam(':id', $_GET['id'], PDO::PARAM_STR);
+				$query->execute();
+				$result=$query->fetch(PDO::FETCH_OBJ);
+				
+				$jsonDecoded = json_decode($result->content, true);
+				$heads = array_keys($jsonDecoded[0]);
+				$tbl = "<table class='table table-bordered'><thead><tr>";
+				$th = "";
+				for($i=0;$i<count($heads);$i++){
+					$th.="<th>".$heads[$i]."</th>";
+				}
+				$tbl .= $th."</tr></thead><tbody>";
+					
+				$tbl .= jsonToTable($jsonDecoded);
+				$tbl .= "</tbody></table>";
+				echo $tbl;
 
+				echo '</div>';
+
+				$filename = 'files/'.$_SESSION['alogin'].' report '.$result->name.'.pdf';
+			
+				echo "<script>
+				$('td:empty').remove();
+				$('tr:empty').remove();
+					var l = {
+				         orientation: 'l',
+				         unit: 'mm',
+				         format: 'a4',
+				         compress: true,
+				         fontSize: 8,
+				         lineHeight: 1,
+				         autoSize: true,
+				         printHeaders: true
+				     };
+					var pdf = new jsPDF(l, 'pt', 'a4', true);
+					 pdf.fromHTML($('#jstbl').get(0), 15, 15, {'width': 300}, function(){
+				   	pdf.save('".$filename."');
+				   	});
+			location.href = '/admin/dashboard.php'	;
+				 	
+					
+					</script>";
+
+
+			}
+			// pdf.addImage(base64, 130, 10, 40, 40);
+			// 		pdf.addHTML($('#jstbl').get(0), function(){
+			// 			pdf.save('".$filename."');	
+			// 			})
+			 
+	    ?>
 	    <script>
 	    	$(document).ready(function(e){
-
 	    		$(".remove_btn").click(function(e){
 	    			var report_id = $(this).data('id');
 	    			$(".report_section[data-report='"+report_id+"']").remove();
@@ -304,7 +375,6 @@
 						    }
 						  }
 	    			}
-	    			console.log(chartOptions)
 					var lineChart = new ApexCharts(
 					    document.querySelector("#line-chart"),
 					    chartOptions

@@ -1,0 +1,7 @@
+[11-Nov-2021 12:10:26 America/Chicago] PHP Notice:  Trying to get property 'db_connect' of non-object in /home/every156/public_html/reports2/admin/functions/method.php on line 17
+[11-Nov-2021 12:10:26 America/Chicago] PHP Notice:  Trying to get property 'query' of non-object in /home/every156/public_html/reports2/admin/functions/method.php on line 18
+[11-Nov-2021 12:10:26 America/Chicago] PHP Notice:  Trying to get property 'host' of non-object in /home/every156/public_html/reports2/admin/functions/method.php on line 19
+[11-Nov-2021 12:10:26 America/Chicago] PHP Notice:  Trying to get property 'username' of non-object in /home/every156/public_html/reports2/admin/functions/method.php on line 19
+[11-Nov-2021 12:10:26 America/Chicago] PHP Notice:  Trying to get property 'password' of non-object in /home/every156/public_html/reports2/admin/functions/method.php on line 19
+[11-Nov-2021 12:10:26 America/Chicago] PHP Notice:  Trying to get property 'name' of non-object in /home/every156/public_html/reports2/admin/functions/method.php on line 19
+[11-Nov-2021 12:10:26 America/Chicago] PHP Warning:  mysqli::__construct(): (28000/1045): Access denied for user 'every156'@'localhost' (using password: NO) in /home/every156/public_html/reports2/admin/functions/method.php on line 19

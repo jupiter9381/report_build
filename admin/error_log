@@ -1,0 +1,29 @@
+[10-Nov-2021 02:53:00 America/Chicago] PHP Parse error:  syntax error, unexpected 'useCORS' (T_STRING), expecting ',' or ';' in /home/every156/public_html/reports2/admin/dashboard.php on line 215
+[11-Nov-2021 01:36:04 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 11
+[11-Nov-2021 01:38:02 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 11
+[11-Nov-2021 01:38:36 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 11
+[11-Nov-2021 01:38:59 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 11
+[11-Nov-2021 01:39:29 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 11
+[11-Nov-2021 01:39:45 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 11
+[11-Nov-2021 01:40:09 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 11
+[11-Nov-2021 01:41:22 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 11
+[11-Nov-2021 01:42:53 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 11
+[11-Nov-2021 01:42:53 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 12
+[11-Nov-2021 01:43:49 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 10
+[11-Nov-2021 03:51:45 America/Chicago] PHP Parse error:  syntax error, unexpected 'bypass' (T_STRING), expecting ',' or ';' in /home/every156/public_html/reports2/admin/reports.php on line 167
+[11-Nov-2021 03:51:53 America/Chicago] PHP Parse error:  syntax error, unexpected 'bypass' (T_STRING), expecting ',' or ';' in /home/every156/public_html/reports2/admin/reports.php on line 167
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: _SESSION in /home/every156/public_html/reports2/admin/includes/navbar_header.php on line 21
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: _SESSION in /home/every156/public_html/reports2/admin/includes/navbar_header.php on line 24
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: _SESSION in /home/every156/public_html/reports2/admin/includes/navbar_header.php on line 32
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: _SESSION in /home/every156/public_html/reports2/admin/includes/sidebar_menu.php on line 21
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: _SESSION in /home/every156/public_html/reports2/admin/includes/sidebar_menu.php on line 41
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: result in /home/every156/public_html/reports2/admin/edit-user.php on line 111
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Trying to get property 'department' of non-object in /home/every156/public_html/reports2/admin/edit-user.php on line 111
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: department in /home/every156/public_html/reports2/admin/edit-user.php on line 111
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: result in /home/every156/public_html/reports2/admin/edit-user.php on line 134
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Trying to get property 'role' of non-object in /home/every156/public_html/reports2/admin/edit-user.php on line 134
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: result in /home/every156/public_html/reports2/admin/edit-user.php on line 134
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Trying to get property 'role' of non-object in /home/every156/public_html/reports2/admin/edit-user.php on line 134
+[11-Nov-2021 10:31:45 America/Chicago] PHP Notice:  Undefined variable: msg in /home/every156/public_html/reports2/admin/edit-user.php on line 180
+[12-Nov-2021 09:15:24 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 10
+[12-Nov-2021 10:35:15 America/Chicago] PHP Notice:  Undefined index: user_type in /home/every156/public_html/reports2/admin/logout.php on line 10

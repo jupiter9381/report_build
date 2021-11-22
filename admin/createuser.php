@@ -108,7 +108,6 @@
 	                                    						<div class="col-md-9">
 	                                    							<div class="controls">
 	                                    								<select class="form-control square" name="department" id="department" data-validation-required-message="This department field is required" required>
-	                                    									<option value="<?php echo htmlentities($result->department);?>"><?php echo $department;?></option>
 												                            <option value="Human Resources">Human Resources</option>
 												                            <option value="Accounts">Accounts</option>
 												                            <option value="Management">Management</option>

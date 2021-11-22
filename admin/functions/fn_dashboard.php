@@ -8,10 +8,15 @@
 		header('location:index.php');
 	}
 
-	$sql = "SELECT * from  reports ";
+	$sql = "SELECT * from  reports WHERE live = 1";
 	$query = $dbh -> prepare($sql);
 	$query->execute();
 	$results=$query->fetchAll(PDO::FETCH_OBJ);
+
+	$sql = "SELECT * from  config LIMIT 1";
+	$query = $dbh -> prepare($sql);
+	$query->execute();
+	$results_config=$query->fetch(PDO::FETCH_OBJ);
 
 	function jsonToTable ($data)
 	{

@@ -18,18 +18,22 @@
             <div class="collapse navbar-collapse d-block" id="navbarSupportedContent">
                 <ul class="navbar-nav">
                     <li class="dropdown nav-item mr-1"><a class="nav-link dropdown-toggle user-dropdown d-flex align-items-end" id="dropdownBasic2" href="javascript:;" data-toggle="dropdown">
-                                <div class="user d-md-flex d-none mr-2"><span class="text-right"><?= $_SESSION['alogin']?></span><span class="text-right text-muted font-small-3">Admin</span></div><img class="avatar" src="<?= SITE_ADMIN_ASSET_IMG?>/portrait/small/avatar-s-1.png" alt="avatar" height="35" width="35">
+                                <div class="user d-md-flex d-none mr-2"><span class="text-right"><?= $_SESSION['alogin']?></span><span class="text-right text-muted font-small-3"><?= $_SESSION['user_type']?></span></div><img class="avatar" src="<?= SITE_ADMIN_ASSET_IMG?>/portrait/small/avatar-s-1.png" alt="avatar" height="35" width="35">
                             </a>
                             <div class="dropdown-menu text-left dropdown-menu-right m-0 pb-0" aria-labelledby="dropdownBasic2">
+                                <?php if($_SESSION['user_type']== 'admin') {?>
                                 <a class="dropdown-item" href="<?= SITE_ADMIN_URL?>createuser.php">
                                     <div class="d-flex align-items-center"><i class="ft-message-square mr-2"></i><span>Create User</span></div>
                                 </a>
-                                <a class="dropdown-item" href="page-user-profile.html">
+                                <?php }?>
+                                <a class="dropdown-item" href="change-password.php">
                                     <div class="d-flex align-items-center"><i class="ft-edit mr-2"></i><span>Change Password</span></div>
                                 </a>
-                                <a class="dropdown-item" href="app-email.html">
+                                <?php if($_SESSION['user_type']== 'admin') {?>
+                                <a class="dropdown-item" href="reports.php">
                                     <div class="d-flex align-items-center"><i class="ft-mail mr-2"></i><span>Delete reports</span></div>
                                 </a>
+                                <?php }?>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item" href="<?= SITE_ADMIN_URL?>logout.php">
                                     <div class="d-flex align-items-center"><i class="ft-power mr-2"></i><span>Logout</span></div>

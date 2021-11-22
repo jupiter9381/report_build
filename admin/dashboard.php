@@ -37,6 +37,9 @@
 	    		font-size: 32px;
 	    		color: red;
 	    	}
+	    	.light {
+	    		color: #342E49 !important;
+	    	}
 	    </style>
 	</head>
 	<body class="vertical-layout vertical-menu 2-columns  navbar-sticky" data-menu="vertical-menu" data-col="2-columns">
@@ -74,7 +77,7 @@
 	                        </div>
 	                	</div>
 	                	<div class="row">
-	                		<img id="headerImg" src="<?= SITE_ADMIN_URL?>uploads/1594843584.png" class="d-none">
+	                		<img id="headerImg" src="<?= SITE_ADMIN_URL?>uploads/<?= $results_config->logo?>" class="d-none">
 	                		<?php foreach($results as $result) { ?>
 	                			<?php if($result->live == "1") {?>
 			                		<div class="col-md-4 report_section" data-report="<?= $result->id?>">
@@ -89,10 +92,10 @@
 		                                    	<div class="card-footer mr-2 ml-2">
 		                                    		<div class="float-left">
 		                                    			<a href="<?= SITE_ADMIN_URL?>dashboard.php?id=<?= $result->id?>&type=pdf"><img src="<?= SITE_ADMIN_ASSET_IMG?>/chart/pdf.jpg" width="30" class="mr-2"></a>
-		                                    			<a href="javascript:void(0);"><img src="<?= SITE_ADMIN_ASSET_IMG?>/chart/csv.png" width="35"></a>
+		                                    			<a href="<?= SITE_ADMIN_URL?>dashboard.php?id=<?= $result->id?>&type=csv"><img src="<?= SITE_ADMIN_ASSET_IMG?>/chart/csv.png" width="35"></a>
 		                                    		</div>
 		                                    		<div class="float-right"> 
-		                                    			<a href="javascript:void(0);" class="view_report" data-id="<?= $result->id?>" data-xaxis="<?= $result->x_axis?>" data-yaxis="<?= $result->y_axis?>" data-content='<?= $result->content?>' data-name="<?= $result->name?>" data-type="<?= $result->chart_type?>"><i class="ft-eye mr-2"></i></a>
+		                                    			<a href="javascript:void(0);" class="view_report" data-id="<?= $result->id?>" data-xaxis="<?= $result->x_axis?>" data-yaxis="<?= $result->y_axis?>" data-content='<?= $result->content?>' data-name="<?= $result->name?>" data-type="<?= $result->chart_type?>" data-query="<?= $result->query?>"><i class="ft-eye mr-2"></i></a>
 		                                    			<a href="javascript:void(0);" data-id="<?= $result->id?>" class="remove_btn"><i class="ft-trash"></i></a>	
 		                                    		</div>
 		                                    	</div>
@@ -118,6 +121,10 @@
                     </div>
                     <div class="modal-body">
                     	<div id="line-chart"></div>
+                    	<div class="text-center">
+                    		<label class="xaxis"></label> &nbsp;&nbsp;&nbsp;
+                    		<label class="yaxis" ></label>
+                    	</div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn bg-light-secondary" data-dismiss="modal">Close</button>
@@ -131,7 +138,11 @@
 	    <?php include('includes/basic_js.php');?>
 
 	    <script src="<?= SITE_ADMIN_ASSET_VENDOR?>/js/apexcharts.min.js"></script>
-	    <script src="<?= SITE_ADMIN_ASSET_JS?>/jspdf.min.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>
+    	
+	    <script src="<?= SITE_ADMIN_ASSET_JS?>/html2canvas.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.0.10/jspdf.plugin.autotable.min.js"></script>
+
 	    <script>
 	    	function getBase64Image(img) {
 			  var canvas = document.createElement("canvas");
@@ -139,31 +150,56 @@
 			  canvas.height = img.height;
 			  var ctx = canvas.getContext("2d");
 			  ctx.drawImage(img, 0, 0);
-			  var dataURL = canvas.toDataURL("image/png");
+			  var dataURL = canvas.toDataURL("image/jpg");
 			  return dataURL;
 			}
 			var base64 = getBase64Image(document.getElementById("headerImg"));
 	    </script>
+	    <style>
+	    	#jstbl {
+	    		background-color: white;
+	    	}
+	    </style>
 	    <?php 
 	    	if(isset($_GET['id']) && isset($_GET['type']) && $_GET['type']=='pdf'){
-				echo '<div id="jstbl" class="col-md-12 table-responsive">';
-				echo '<h3>Header</h3>';
+				echo '<div id="jstbl" class="col-md-12">';
 				$sql = "SELECT * from reports where id = (:id);";
 				$query = $dbh->prepare($sql);
 				$query-> bindParam(':id', $_GET['id'], PDO::PARAM_STR);
 				$query->execute();
 				$result=$query->fetch(PDO::FETCH_OBJ);
 				
-				$jsonDecoded = json_decode($result->content, true);
-				$heads = array_keys($jsonDecoded[0]);
-				$tbl = "<table class='table table-bordered'><thead><tr>";
+				$db_connect = json_decode($result->db_connect);
+				$sql_report = $result->query;
+				$conn = new mysqli($db_connect->host,$db_connect->username, $db_connect->password,$db_connect->name);
+				// Check connection
+				if ($conn->connect_error) {
+					die("Connection failed: " . $conn->connect_error);
+				}
+				$result_query = $conn->query($sql_report);
+				if ($result_query->num_rows > 0) { 
+					$data = array();
+					while($row = $result_query->fetch_assoc()) {
+						$data[] = $row;
+					}
+				}
+				$heads = array_keys($data[0]);
+				$pdfData = array();
+				foreach($data as $rowData) {
+					$tempArray = array();
+					for($i=0;$i<count($heads);$i++){
+						array_push($tempArray, $rowData[$heads[$i]]);
+					}
+					array_push($pdfData, $tempArray);
+				}
+				$tbl = "<table class='table table-bordered' style='width: 100%'><thead><tr>";
 				$th = "";
 				for($i=0;$i<count($heads);$i++){
-					$th.="<th>".$heads[$i]."</th>";
+					$th.="<th style='width: auto;'>".$heads[$i]."</th>";
 				}
 				$tbl .= $th."</tr></thead><tbody>";
 					
-				$tbl .= jsonToTable($jsonDecoded);
+				$tbl .= jsonToTable($data);
 				$tbl .= "</tbody></table>";
 				echo $tbl;
 
@@ -172,34 +208,90 @@
 				$filename = 'files/'.$_SESSION['alogin'].' report '.$result->name.'.pdf';
 			
 				echo "<script>
-				$('td:empty').remove();
-				$('tr:empty').remove();
+					$('td:empty').remove();
+					$('tr:empty').remove();
 					var l = {
-				         orientation: 'l',
-				         unit: 'mm',
-				         format: 'a4',
-				         compress: true,
-				         fontSize: 8,
-				         lineHeight: 1,
+				         orientation: 'p',
+				         unit: 'px',
 				         autoSize: true,
-				         printHeaders: true
+				         compress: true,
+				         format: 'a3',
+				         fontSize: 8,
+				         printHeaders: true,
+				         precision: 4
 				     };
-					var pdf = new jsPDF(l, 'pt', 'a4', true);
-					 pdf.fromHTML($('#jstbl').get(0), 15, 15, {'width': 300}, function(){
-				   	pdf.save('".$filename."');
-				   	});
-			location.href = '/admin/dashboard.php'	;
-				 	
+				     let columns = JSON.parse('".json_encode($heads)."');
+				     let data = []; 
+				     $('#jstbl table tbody').find('tr').map(function(e){
+				     	let rowData = [];
+				     	$(this).find('td').map(function(e){
+				     		rowData.push($(this).text());
+				     	});
+				     	data.push(rowData);
+				     })
+					var pdf = new jsPDF(l, '', '', '');
+					pdf.addImage(base64, 275, 10, 60, 60);
+					pdf.setFontSize(18);
+					pdf.text('".$results_config->header."', 20, 80);
+					pdf.setFontSize(10);
+					pdf.autoTable({head: [columns], body: data, margin: {top: 100, left: 20, right: 20, bottom: 30}});
+					pdf.save('".$filename."');
+					location.href = '/admin/dashboard.php';
 					
-					</script>";
-
-
+				</script>";
 			}
-			// pdf.addImage(base64, 130, 10, 40, 40);
-			// 		pdf.addHTML($('#jstbl').get(0), function(){
-			// 			pdf.save('".$filename."');	
-			// 			})
-			 
+			if(isset($_GET['id']) && isset($_GET['type']) && $_GET['type']=='csv'){
+				$sql = "SELECT * from reports where id = (:id);";
+				$query = $dbh-> prepare($sql);
+				$query-> bindParam(':id', $_GET['id'], PDO::PARAM_STR);
+				$query->execute();
+				$result1=$query->fetch(PDO::FETCH_OBJ);
+					
+				$jsonDecoded = json_decode($result->content, true); // add true, will handle as associative array    =
+				$db_connect = json_decode($result1->db_connect);
+				$sql_report = $result1->query;
+				$conn1 = new mysqli($db_connect->host,$db_connect->username, $db_connect->password,$db_connect->name);
+				// Check connection
+				if ($conn1->connect_error) {
+					die("Connection failed: " . $conn1->connect_error);
+				}
+				$result_query = $conn1->query($sql_report);
+				if ($result_query->num_rows > 0) { 
+					$data = array();
+					while($row = $result_query->fetch_assoc()) {
+						$data[]=$row;
+					}
+				}
+				$conn1->close();
+				$filename = 'files/'.$_SESSION['alogin'].' report '.$result1->name.'.csv';
+				$fh = fopen($filename, 'w');
+				if (is_array($data)) {
+				  foreach ($data as $line) {
+				    // with this foreach, if value is array, replace it with first array value
+				    foreach ($line as $key => $value) {
+				        if (is_array($value)) {
+				            $line[$key] = $value[0];
+				        }
+				    }
+				    // no need for foreach, as fputcsv expects array, which we already have
+				    if (is_array($line)) {
+				      fputcsv($fh,$line);
+				    }
+				  }
+				}
+				fclose($fh); 
+
+				echo "<script>
+
+				var anchor = document.createElement('a');
+
+				anchor.download = '".$filename."';
+				anchor.href = '".$filename."';
+				anchor.dataset.downloadurl = ['text/plain', anchor.download, anchor.href].join(':');
+				anchor.click();
+				location.href = '/admin/dashboard.php';
+				</script>";
+			}
 	    ?>
 	    <script>
 	    	$(document).ready(function(e){
@@ -227,161 +319,188 @@
   				var themeColors = [$primary, $warning, $success, $danger, $info];
 
 	    		$(".view_report").click(function(e){
+	    			let report_id = $(this).data('id');
 	    			let xaxis = $(this).data('xaxis');
 	    			let yaxis = $(this).data('yaxis');
-	    			let content = $(this).data('content');
 	    			let title = $(this).data('name');
 	    			let type = $(this).data('type');
+	    			let query = $(this).data('query');
 	    			let xaxisArray = [];
 	    			let yaxisArray = [];
-	    			content.forEach(item => {
-	    				xaxisArray.push(item[xaxis])
-	    				yaxisArray.push(Number(item[yaxis]))
-	    			});
-	    			console.log(type);
-	    			var chartOptions;
-	    			if(type == "line") {
-	    				//-------------- Line Chart starts --------------
-						chartOptions = {
-						    chart: {
-						      height: 350,
-						      type: 'line',
-						      zoom: {
-						        enabled: false
-						      }
-						    },
-						    colors: themeColors,
-						    dataLabels: {
-						      enabled: false
-						    },
-						    stroke: {
-						      curve: 'straight'
-						    },
-						    series: [{
-						      name: xaxis,
-						      data: yaxisArray,
-						    }],
-						    title: {
-						      text: title,
-						      align: 'left'
-						    },
-						    grid: {
-						      row: {
-						        colors: ['#F5F5F5', 'transparent'], // takes an array which will be repeated on columns
-						        opacity: 0.8
-						      },
-						    },
-						    xaxis: {
-						      categories: xaxisArray,
-						    },
-						    yaxis: {
-						      tickAmount: 5,
-						    }
-						}
-	    			} else if (type == "bar") {
-	    				chartOptions = {
-						    chart: {
-						      height: 350,
-						      type: 'bar',
-						    },
-						    colors: themeColors,
-						    plotOptions: {
-						      bar: {
-						        horizontal: false,
-						        //endingShape: 'rounded',
-						        columnWidth: '55%',
-						      },
-						    },
-						    dataLabels: {
-						      enabled: false
-						    },
-						    stroke: {
-						      show: true,
-						      width: 2,
-						      colors: ['transparent']
-						    },
-						    series: [{
-						      name: yaxis,
-						      data: yaxisArray
-						    }],
-						    legend: {
-						      offsetY: -10
-						    },
-						    xaxis: {
-						      categories: xaxisArray,
-						    },
-						    yaxis: {
-						    },
-						    fill: {
-						      opacity: 1
-						    },
-						    tooltip: {
-						     
-						    }
-						}
-	    			} else if (type == "pie"){
-	    				chartOptions = {
-						    chart: {
-						      type: 'pie',
-						      height: 320
-						    },
-						    colors: themeColors,
-						    labels: xaxisArray,
-						    series: yaxisArray,
-						    legend: {
-						      itemMargin: {
-						        horizontal: 2
-						      },
-						    },
-						    responsive: [{
-						      breakpoint: 576,
-						      options: {
-						        chart: {
-						          width: 300
-						        },
-						        legend: {
-						          position: 'bottom'
-						        }
-						      }
-						    }]
-						  }
-	    			} else if(type == 'area') {
-	    				chartOptions = {
-						    chart: {
-						      height: 350,
-						      type: 'area',
-						    },
-						    colors: themeColors,
-						    dataLabels: {
-						      enabled: false
-						    },
-						    stroke: {
-						      curve: 'smooth'
-						    },
-						    series: [{
-						      name: yaxis,
-						      data: yaxisArray
-						    }],
-						    legend: {
-						      offsetY: -10
-						    },
-						    xaxis: {
-						      categories: xaxisArray,
-						    },
-						    tooltip: {
-						      x: {
-						        format: 'dd/MM/yy HH:mm'
-						      },
-						    }
-						  }
-	    			}
-					var lineChart = new ApexCharts(
-					    document.querySelector("#line-chart"),
-					    chartOptions
-					);
-					lineChart.render();
+	    			$("#reportGraphModal .xaxis").html("X Axis: " + xaxis);
+	    			$("#reportGraphModal .yaxis").html("Y Axis: " + yaxis);
+	    			$.ajax({
+			            type: "POST",
+			            url: './functions/method.php',
+			            data: {id: report_id, method: 'get_report_content' },
+			            dataType: 'json',
+			            success: function(result) {
+			            	let content = result['content'];
+			            	console.log(content);
+			            	content.forEach(item => {
+			    				xaxisArray.push(item[xaxis])
+			    				if(!item[yaxis]) yaxisArray.push(0);
+			    				else {
+			    					let value;
+			    					if(item[yaxis].indexOf('$') > -1) value = Number(item[yaxis].split('$')[1].replaceAll(',', ''));
+			    					else value = Number(item[yaxis].replaceAll(',', ''));
+			    					if(!value) value = 0;
+			    					yaxisArray.push(value);
+			    				}
+			    				
+			    			});
+			    			// 			var chartOptions;
+			    			if(type == "line") {
+			    				//-------------- Line Chart starts --------------
+								chartOptions = {
+								    chart: {
+								      height: 350,
+								      type: 'line',
+								      zoom: {
+								        enabled: false
+								      }
+								    },
+								    colors: themeColors,
+								    dataLabels: {
+								      enabled: false
+								    },
+								    stroke: {
+								      curve: 'straight'
+								    },
+								    series: [{
+								      name: xaxis,
+								      data: yaxisArray,
+								    }],
+								    title: {
+								      text: title,
+								      align: 'left'
+								    },
+								    grid: {
+								      // row: {
+								      //   colors: ['#F5F5F5', 'transparent'], // takes an array which will be repeated on columns
+								      //   opacity: 0.8
+								      // },
+								    },
+								    xaxis: {
+								      categories: xaxisArray,
+								    },
+								    yaxis: {
+								      tickAmount: 5,
+								    },
+								    tooltip: {
+									  shared: true,
+									  intersect: false
+									}
+								}
+			    			} else if (type == "bar") {
+			    				chartOptions = {
+								    chart: {
+								      height: 350,
+								      type: 'bar',
+								    },
+								    colors: themeColors,
+								    plotOptions: {
+								      bar: {
+								        horizontal: false,
+								        //endingShape: 'rounded',
+								        columnWidth: '55%',
+								      },
+								    },
+								    dataLabels: {
+								      enabled: false
+								    },
+								    stroke: {
+								      show: true,
+								      width: 2,
+								      colors: ['transparent']
+								    },
+								    series: [{
+								      name: yaxis,
+								      data: yaxisArray
+								    }],
+								    legend: {
+								      offsetY: -10
+								    },
+								    xaxis: {
+								      categories: xaxisArray
+								    },
+								    yaxis: {
+								    },
+								    fill: {
+								      opacity: 1
+								    },
+								    tooltip: {
+								     
+								    }
+								}
+			    			} else if (type == "pie"){
+			    				chartOptions = {
+								    chart: {
+								      type: 'pie',
+								      height: 320
+								    },
+								    colors: themeColors,
+								    labels: xaxisArray,
+								    series: yaxisArray,
+								    legend: {
+								      itemMargin: {
+								        horizontal: 2
+								      },
+								    },
+								    responsive: [{
+								      breakpoint: 576,
+								      options: {
+								        chart: {
+								          width: 300
+								        },
+								        legend: {
+								          position: 'bottom'
+								        }
+								      }
+								    }]
+								  }
+			    			} else if(type == 'area') {
+			    				chartOptions = {
+								    chart: {
+								      height: 350,
+								      type: 'area',
+								    },
+								    colors: themeColors,
+								    dataLabels: {
+								      enabled: false
+								    },
+								    stroke: {
+								      curve: 'smooth'
+								    },
+								    series: [{
+								      name: yaxis,
+								      data: yaxisArray
+								    }],
+								    legend: {
+								      offsetY: -10
+								    },
+								    xaxis: {
+								      categories: xaxisArray,
+								    },
+								    tooltip: {
+								      x: {
+								        format: 'dd/MM/yy HH:mm'
+								      },
+								    }
+								  }
+			    			}
+							var lineChart = new ApexCharts(
+							    document.querySelector("#line-chart"),
+							    chartOptions
+							);
+							lineChart.render();
+							$("#reportGraphModal").modal('show');
+			            }
+			        });
+	    			
+	    
 
-					$("#reportGraphModal").modal('show');
+					
 	    		});
 	    		
 	    		

@@ -6,6 +6,12 @@
 	if(strlen($_SESSION['alogin'])==0){
 		header('location:index.php');
 	}
+	if(isset($_GET['del'])) {
+		$id = $_GET['del'];
+		$sql = "DELETE FROM users WHERE id = '$id'";
+		$query = $dbh -> prepare($sql);
+		$query->execute();
+	}
 	$sql = "SELECT id, name, email, level, department, role from  users ";
 	$query = $dbh -> prepare($sql);
 	$query->execute();

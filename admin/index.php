@@ -47,17 +47,8 @@
 		                                                    <p>Welcome back, please login to your account.</p>
 		                                                    <input type="text" class="form-control mb-3" placeholder="Username" name="username">
 		                                                    <input type="password" class="form-control mb-2" placeholder="Password" name="password">
-		                                                    <div class="d-sm-flex justify-content-between mb-3 font-small-2">
-		                                                        <div class="remember-me mb-2 mb-sm-0">
-		                                                            <div class="checkbox auth-checkbox">
-		                                                                <input type="checkbox" id="auth-ligin">
-		                                                                <label for="auth-ligin"><span>Remember Me</span></label>
-		                                                            </div>
-		                                                        </div>
-		                                                        <a href="auth-forgot-password.html">Forgot Password?</a>
-		                                                    </div>
+		                                                    
 		                                                    <div class="d-flex justify-content-between flex-sm-row flex-column">
-		                                                        <a href="auth-register.html" class="btn bg-light-primary mb-2 mb-sm-0">Register</a>
 		                                                        <button type="submit" name="login" class="btn btn-primary">Login</button>
 		                                                    </div>
 		                                                </div>

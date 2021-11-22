@@ -21,7 +21,7 @@
 			$filename = $result_config->logo;
 			$header = $result_config->header;
 		}
-		if($_FILES['logo']) {
+		if($_FILES['logo']['name']) {
 			$target_dir = "uploads/";
 			$target_file = $target_dir . basename($_FILES["logo"]["name"]);
 			$imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
@@ -32,6 +32,7 @@
 				//$msg = "Logo upload failed";
 			}	
 		}
+
 		if($_POST['header']) $header = $_POST['header'];
 		if(!$result_config) {
 			$sql ="INSERT INTO config(logo, header) VALUES(:logo, :header)";
@@ -46,7 +47,8 @@
 			$query-> bindParam(':header', $header, PDO::PARAM_STR);
 			$query->execute();
 		}
-		$result_config['logo'] = $filename;
-		$result_config['header'] = $header;
+		
+		$result_config->logo = $filename;
+		$result_config->header = $header;
 	}
 ?>

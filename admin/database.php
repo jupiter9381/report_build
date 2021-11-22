@@ -185,7 +185,7 @@
 																	$jsonDecoded = json_decode(json_encode($data), true);
 																	$heads = array_keys($jsonDecoded[0]);
 																	?>
-																	<table class="table table-bordered" id="queryTable">
+																	<table class="table table-bordered table-responsive" id="queryTable">
 																		<thead>
 																			<tr>
 																				<?php 
@@ -202,7 +202,12 @@
 																		</tbody>
 																	</table>
 																	<form method="post">
-																		<textarea style="display: none;" type="text" name="result" class="form-control" required ><?php echo json_encode($data);?></textarea>
+																		<textarea style="display: none;" name="result" class="form-control" required ><?php echo json_encode($data);?></textarea>
+																		<textarea style="display: none;" name="query" class="form-control" required ><?php echo $_POST['query'];?></textarea>
+																		<input type="hidden" name="db_host" value="<?= htmlentities($result_db->host);?>">
+																		<input type="hidden" name="db_username" value="<?= htmlentities($result_db->user);?>">
+																		<input type="hidden" name="db_password" value="<?= htmlentities($result_db->pass);?>">
+																		<input type="hidden" name="db_name" value="<?= htmlentities($result_db->db);?>">
 						                								<div class="row">
 						                									<div class="col-sm-12 col-12 text-center">
 						                										<h4>Save Report</h4>	
@@ -278,7 +283,7 @@
 								                                    						<label class="col-md-3 col-form-label" for="chart_type">Chart Type</label>
 								                                    						<div class="col-md-9">
 								                                    							<div class="controls">
-								                                    								<select class="form-control square" name="chart_type" id="chart_type" data-validation-required-message="This level field is required">
+								                                    								<select class="form-control square" name="chart_type" id="chart_type">
 								                                    									<option></option>
 								                                    									<option value="bar">Bar Graph</option>
 								                                    									<option value="pie">Pie Chart</option>
@@ -296,7 +301,7 @@
 								                                    						<label class="col-md-3 col-form-label" for="x_axis">X Axis</label>
 								                                    						<div class="col-md-9">
 								                                    							<div class="controls">
-								                                    								<select class="form-control square" name="x_axis" id="x_axis" data-validation-required-message="This level field is required">
+								                                    								<select class="form-control square" name="x_axis" id="x_axis">
 								                                    									<option></option>
 								                                    									<?php 
 																											for($i=0;$i<count($heads);$i++) {
@@ -317,7 +322,7 @@
 								                                    						<label class="col-md-3 col-form-label" for="y_axis">Y Axis</label>
 								                                    						<div class="col-md-9">
 								                                    							<div class="controls">
-								                                    								<select class="form-control square" name="y_axis" id="y_axis" data-validation-required-message="This Y Axis field is required">
+								                                    								<select class="form-control square" name="y_axis" id="y_axis">
 								                                    									<option></option>
 								                                    									<?php 
 																											for($i=0;$i<count($heads);$i++) {

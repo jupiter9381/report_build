@@ -29,8 +29,10 @@
 		$x_axis=$_POST['x_axis'];
 		$y_axis=$_POST['y_axis'];
 		$live=$_POST['live'] == "on" ? '1' : '0';
-		$sqlsave="insert into reports (level,department,content,name, live, chart_type, x_axis, y_axis) values ('$level','$department','$content','$name','$live','$chart_type','$x_axis','$y_axis')";
-		//var_dump($sqlsave);
+		$query = $_POST['query'];
+		$db_connect = json_encode(array('host'=> $_POST['db_host'], 'username' => $_POST['db_username'], 'password' =>$_POST['db_password'], 'name'=> $_POST['db_name']));
+		$sqlsave="insert into reports (level,department,content,name, live, db_connect, query, chart_type, x_axis, y_axis) values ('$level','$department','$content','$name','$live', '$db_connect', '$query', '$chart_type','$x_axis','$y_axis')";
+
 		try {
 			$dbh->exec($sqlsave);
 		} catch(Exception $e) {
